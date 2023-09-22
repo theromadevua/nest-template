@@ -7,12 +7,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Token } from './schemas/token.schema';
 import { User } from 'src/users/schemas/user.schema';
+import { SendMailService } from 'src/mail/mail.service';
 @Injectable()
 export class AuthService {
 
     constructor(
         private userService: UsersService,
         private jwtService: JwtService,
+        private sendMailService: SendMailService,
         @InjectModel(Token.name) private tokenModel: Model<Token>,
         @InjectModel(User.name) private userModel: Model<User>
     ){}
@@ -26,6 +28,7 @@ export class AuthService {
         if(!savedToken){
             throw new HttpException('Токен не сохранен', HttpStatus.BAD_REQUEST)
         }
+        this.sendMailService.example()
         
         return {refreshToken: refreshToken.token, accessToken: accessToken.token}
     }

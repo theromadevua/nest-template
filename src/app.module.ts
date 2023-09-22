@@ -11,6 +11,11 @@ import { UsersController } from './users/users.controller';
 import {JwtService} from '@nestjs/jwt'
 import { FilesModule } from './files/files.module';
 import {ServeStaticModule} from "@nestjs/serve-static";
+import { SendMailService } from './mail/mail.service';
+import { MailerModule } from '@nestjs-modules/mailer';  
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+
+import { MailModule } from './mail/mail.module';
 import * as path from 'path';
 
 
@@ -20,10 +25,27 @@ import * as path from 'path';
       rootPath: path.resolve( __dirname, 'static'),
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forRoot('mongodb+srv://neirosifilis:some123@data.uqfkizy.mongodb.net/nest?retryWrites=true&w=majority'),
+    MongooseModule.forRoot(''),
     UsersModule,
     AuthModule,
     FilesModule,
+    MailModule,
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false, // upgrade later with STARTTLS
+          auth: {
+            user: "",
+            pass: ""
+          },
+        },
+        defaults: {
+          from:'',
+        },
+      }),
+    }),
   ],
   controllers: [],
   providers: [],

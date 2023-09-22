@@ -7,11 +7,14 @@ import { UsersService } from 'src/users/users.service';
 import {JwtModule} from "@nestjs/jwt";
 import { Token, TokenSchema } from './schemas/token.schema';
 import { UsersModule } from 'src/users/users.module';
+import { MailModule } from 'src/mail/mail.module';
+import { SendMailService } from 'src/mail/mail.service';
 
 @Module({
     controllers: [AuthController],
-    providers: [AuthService, UsersService],
+    providers: [AuthService, UsersService, SendMailService],
     imports: [
+        MailModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }, { name: Token.name, schema: TokenSchema }]),
         JwtModule.register({
             secret: process.env.PRIVATE_KEY || 'SECRET',
